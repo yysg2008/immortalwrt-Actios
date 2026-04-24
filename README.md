@@ -10,11 +10,11 @@
 
 ## 编译升级固件步骤
 
-[**Actions**](https://github.com/x7780/Actions-immortalwrt/actions) → **Build_imm_高通410系列** → **Run workflow** → 选择设备型号 → 填写需要插件包 → 开始编译
+[**Actions**](https://github.com/x7780/immortalwrt-Actios/actions) → **Build_imm_高通410系列** → **Run workflow** → 选择设备型号 → 填写需要插件包 → 开始编译
 
 > ⏱️ 编译约 1.5-2 小时，插件越多时间越长，请耐心等待编译完成在下载固件
 
-[**Releases**](https://github.com/x7780/Actions-immortalwrt/releases) → 找到你编译的对应版本 → 下载你编译的版本（OpenWrt_xxx_xxx_刷机包.zip 解压即刷）
+[**Releases**](https://github.com/x7780/immortalwrt-Actios/releases) → 找到你编译的对应版本 → 下载你编译的版本（OpenWrt_xxx_xxx_刷机包.zip 解压即刷）
 
 > ⚠️ 注意：插件建议不超过 20 个，随身wifi设备只有512MB内存，太多会设备内存负担太大，请勿重复添加
 
