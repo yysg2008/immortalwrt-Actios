@@ -12,7 +12,7 @@
 
 [**Actions**](https://github.com/x7780/immortalwrt-Actios/actions) → **Build_imm_高通410系列** → **Run workflow** → 选择设备型号 → 填写需要插件包 → 开始编译
 ![编译教程](img/1.png)
-> ⏱️ 编译约 1.5-2 小时，插件越多时间越长，请耐心等待编译完成在下载固件
+⏱️ 编译约 1.5-2 小时，插件越多时间越长，请耐心等待编译完成在下载固件
 ![编译教程](img/2.png)
 [**Releases**](https://github.com/x7780/immortalwrt-Actios/releases) → 找到你编译的对应版本 → 下载你编译的版本（OpenWrt_xxx_xxx_刷机包.zip 解压即刷）
 
