@@ -14,14 +14,16 @@
 ![编译教程](img/1.png)
 
 2. 编译约⏱️ 1.5-2 小时，插件越多时间越长.
-![编译教程](img/2.png)
+![编译过程](img/2.png)
 
 3. [**Releases**](https://github.com/x7780/immortalwrt-Actios/releases) → 找到你编译的对应版本 → 下载你编译的版本（OpenWrt_xxx_xxx_刷机包.zip 解压即刷）
-![编译教程](img/3.png)
+![下载固件包](img/3.png)
 
-下载你的定制刷机包，就可以开始刷机了
-![编译教程](img/4.png)
+如果你原本系统是linux或这opnewrt系统，就可以按照下面步骤升级就行。
+![升级固件](img/4.png)
 
+如果你设备重来没刷过linux或者openwrt，还是原版安卓，就按下面教程刷入，注意必须备份分区。
+![安卓刷入openwrt固件](img/5.png)
 ---
 
 ### 推荐插件配置（可直接复制粘贴）
