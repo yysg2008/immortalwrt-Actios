@@ -3,7 +3,7 @@
 # 每个型号独立 job 并行运行，失败的会单独标红
 #
 
-name: Test_全型号编译测试
+name: Test_全型号编译用于测速
 
 on:
   workflow_dispatch:
