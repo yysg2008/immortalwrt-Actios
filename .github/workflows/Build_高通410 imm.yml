@@ -37,6 +37,7 @@ on:
         options:
           - lkiuyu/immortalwrt
           - xuxin1955/immortalwrt
+          - immortalwrt/immortalwrt
         default: lkiuyu/immortalwrt
         required: true
       extra_packages:
