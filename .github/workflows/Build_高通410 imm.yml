@@ -39,7 +39,7 @@ on:
         default: lkiuyu/immortalwrt
         required: true
       custom_hash:
-        description: ' ↓ 指定上游 commit hash（留空则自动使用 upstream_lock.txt 中已验证的稳定版本；如固件有问题可从 upstream_history.txt 查历史填入旧 hash 回滚）↓ '
+        description: ' ↓ 指定hash（默认不要填写 upstream_history.txt）↓ '
         required: false
         default: ''
         type: string
