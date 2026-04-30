@@ -1,4 +1,4 @@
-name: 🔒 每3天验证更新hash
+name: 🔒 每3天验证更新custom_hash
 
 on:
   schedule:
