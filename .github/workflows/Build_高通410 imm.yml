@@ -1,7 +1,7 @@
 #
 #
 
-name: 🚀 Build_imm_高通410系列
+name: 🚀 web_高通410系列
 
 on:
   repository_dispatch:
@@ -192,12 +192,47 @@ jobs:
         echo "User requested extra packages:"
         echo "${{ inputs.extra_packages }}"
         echo "=========================================="
-        # 支持逗号或空格分隔，先把逗号替换为空格
-        PACKAGES=$(echo '${{ inputs.extra_packages }}' | sed 's/,/ /g')
+
+        # 提取系统设置参数（__ip__ 和 __hostname__ 前缀）
+        RAW='${{ inputs.extra_packages }}'
+        CUSTOM_IP=$(echo "$RAW" | grep -oP '(?<=__ip__)[^,\s]+' || true)
+        CUSTOM_HOSTNAME=$(echo "$RAW" | grep -oP '(?<=__hostname__)[^,\s]+' || true)
+
+        # 应用自定义 IP
+        if [ -n "$CUSTOM_IP" ]; then
+          echo "🌐 设置管理 IP: $CUSTOM_IP"
+          sed -i "s/192\.168\.1\.1/$CUSTOM_IP/g" package/base-files/files/bin/config_generate
+        fi
+
+        # 应用自定义主机名
+        if [ -n "$CUSTOM_HOSTNAME" ]; then
+          echo "🏷️ 设置主机名: $CUSTOM_HOSTNAME"
+          sed -i "s/set system\.@system\[0\]\.hostname='ImmortalWrt'/set system.@system[0].hostname='$CUSTOM_HOSTNAME'/" package/base-files/files/bin/config_generate || true
+          sed -i "s/option hostname 'ImmortalWrt'/option hostname '$CUSTOM_HOSTNAME'/" package/base-files/files/etc/config/system 2>/dev/null || true
+        fi
+
+        # 过滤掉特殊前缀，只处理真正的包名
+        PACKAGES=$(echo "$RAW" | sed 's/,/ /g' | tr ' ' '\n' | grep -v '^__ip__' | grep -v '^__hostname__' | tr '\n' ' ')
+
+        # 检测是否选了 turboacc，如果选了则先执行安装脚本
+        if echo "$PACKAGES" | grep -qw "luci-app-turboacc"; then
+          echo "⚡ 检测到 luci-app-turboacc，执行 turboacc 安装脚本..."
+          curl -sSL https://raw.githubusercontent.com/mufeng05/turboacc/main/add_turboacc.sh -o add_turboacc.sh && bash add_turboacc.sh || echo "⚠️ turboacc 脚本执行失败，跳过"
+        fi
+
         for pkg in $PACKAGES; do
           if [ -n "$pkg" ]; then
-            echo "Adding package to .config: CONFIG_PACKAGE_$pkg=y"
-            echo "CONFIG_PACKAGE_$pkg=y" >> .config
+            CFG="CONFIG_PACKAGE_${pkg}"
+            if grep -q "^# ${CFG} is not set" .config; then
+              sed -i "s/^# ${CFG} is not set$/${CFG}=y/" .config
+              echo "✅ Enabled (replaced): ${CFG}=y"
+            elif grep -q "^${CFG}=" .config; then
+              sed -i "s/^${CFG}=.*$/${CFG}=y/" .config
+              echo "✅ Enabled (updated): ${CFG}=y"
+            else
+              echo "${CFG}=y" >> .config
+              echo "✅ Enabled (appended): ${CFG}=y"
+            fi
           fi
         done
         
@@ -321,6 +356,15 @@ jobs:
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
       run: |
         PROFILE=${{ github.event.inputs.profile }}
+        # 提取用户设置的 IP 和主机名
+        RAW='${{ inputs.extra_packages }}'
+        CUSTOM_IP=$(echo "$RAW" | grep -oP '(?<=__ip__)[^,\s]+' || true)
+        CUSTOM_HOSTNAME=$(echo "$RAW" | grep -oP '(?<=__hostname__)[^,\s]+' || true)
+        DISPLAY_IP=${CUSTOM_IP:-192.168.1.1}
+        DISPLAY_HOSTNAME=${CUSTOM_HOSTNAME:-ImmortalWrt}
+        # 过滤掉特殊前缀，只显示真正的包名
+        EXTRA=$(echo "$RAW" | sed 's/,/ /g' | tr ' ' '\n' | grep -v '^__ip__' | grep -v '^__hostname__' | sed '/^$/d')
+
         echo "release_tag=$(date +"%Y.%m.%d-%H%M")-${PROFILE}" >> $GITHUB_OUTPUT
         touch release.txt
         {
@@ -331,12 +375,11 @@ jobs:
           echo "| 编译者 | ${{ github.actor }} |"
           echo "| 机型 | ${PROFILE} |"
           echo "| 内核版本 | ${{ env.KERNEL_VER }} |"
-          echo "| 管理地址 | 192.168.1.1 |"
+          echo "| 管理地址 | ${DISPLAY_IP} |"
+          echo "| 主机名 | ${DISPLAY_HOSTNAME} |"
           echo "| 默认用户 | root |"
           echo "| 默认密码 | 空 |"
           echo ""
-          # 额外包
-          EXTRA=$(echo '${{ inputs.extra_packages }}' | sed 's/,/ /g' | tr ' ' '\n' | sed '/^$/d')
           if [ -n "$EXTRA" ]; then
             echo "### 额外添加的包"
             echo "$EXTRA" | sed 's/^/- /'
