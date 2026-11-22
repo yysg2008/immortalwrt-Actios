@@ -27,3 +27,10 @@ sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/M
 # git clone https://github.com/gSpotx2f/luci-app-cpu-status-mini package/luci-app-cpu-status-mini
 # git clone https://github.com/lkiuyu/luci-app-temp-status package/luci-app-temp-status
 # git clone https://github.com/lkiuyu/DbusSmsForwardCPlus package/DbusSmsForwardCPlus
+# 补回上游从 packages feed 移至主仓库的 libffi 包
+if [ ! -d package/libs/libffi ]; then
+  git clone --depth 1 --filter=blob:none --sparse https://github.com/immortalwrt/immortalwrt.git /tmp/imm_libffi
+  git -C /tmp/imm_libffi sparse-checkout set package/libs/libffi
+  cp -r /tmp/imm_libffi/package/libs/libffi package/libs/libffi
+  rm -rf /tmp/imm_libffi
+fi
